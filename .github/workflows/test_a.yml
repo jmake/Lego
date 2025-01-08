@@ -21,8 +21,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake cmake-curses-gui build-essential
-        cmake --version 
-        g++ --version
+        g++ --version ## g++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0
+        cmake --version ##  3.31.3
 
     - run : |        
         sudo apt-get install -y libpcl-dev
