@@ -16,19 +16,24 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - run : |
-        cd pcl 
-        ls -la 
-     
+
     - name: System dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake cmake-curses-gui build-essential
         cmake --version 
         g++ --version
-        
+
+    - run : |        
         sudo apt-get install -y libpcl-dev
 
+    - run : |
+        cd pcl 
+        ls -la 
+        cmake . 
+        make -B 
+        ./interactive_icp untitled.ply 100
+        ls -la 
         
     - name: Set up Python
       uses: actions/setup-python@v4
