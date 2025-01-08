@@ -1,4 +1,4 @@
-name: docker
+name: test_a
 
 on:
   workflow_dispatch:  
@@ -13,11 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - run : |
+        cd pcl 
+        ls -la 
+     
     - name: System dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake cmake-curses-gui build-essential
+        cmake --version 
+        g++ --version
+        
         sudo apt-get install -y libpcl-dev
+
         
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -32,5 +43,3 @@ jobs:
       run: |
         python --version 
 
-    - name: Checkout repository
-      uses: actions/checkout@v4
