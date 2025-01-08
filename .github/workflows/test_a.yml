@@ -33,6 +33,14 @@ jobs:
         cmake . 
         make -B 
         ./interactive_icp untitled.ply 100
+        ## ...
+        ## Loaded file untitled.ply (36008 points) in 28.6452 ms
+        ## Applying this rigid transformation to: cloud_in -> cloud_icp
+        ## Rotation matrix :
+        ##     |  0.924 -0.383  0.000 |
+        ## R = |  0.383  0.924  0.000 |
+        ##     |  0.000  0.000  1.000 |
+        ## ...
         ls -la 
         
     - name: Set up Python
