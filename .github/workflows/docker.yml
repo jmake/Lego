@@ -1,0 +1,33 @@
+name: docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake cmake-curses-gui build-essential
+        sudo apt-get install -y libpcl-dev
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+
+    - name: Run tests
+      run: |
+        python --version 
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
