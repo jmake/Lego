@@ -135,7 +135,7 @@ int main (int argc, char* argv[])
 
   std::vector<double> values(matrix.data(), matrix.data() + matrix.size());
   assert(std::abs(values[0] - 0.923883) < 1e-4 && "values[0] - 0.923883");
-  assert(std::abs(values[11] + 0.4) < 1e-4 && "values[11] + 0.4");
+  assert(std::abs(values[12] + 0.4) < 1e-4 && "values[11] + 0.4");
 
   std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
   pcl::io::savePLYFile("cloud_icp.ply", *cloud_icp);
