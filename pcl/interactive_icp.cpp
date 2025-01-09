@@ -11,10 +11,30 @@
 #include <pcl/registration/icp.h>
 #include <pcl/console/time.h>   // TicToc
 
+#include <Eigen/Dense>
+
+
 typedef pcl::PointXYZ PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 
 bool next_iteration = false;
+
+Eigen::Vector3d 
+extractEulerAngles(const Eigen::Matrix4d& transformation) 
+{
+    // Extract the rotation part (top-left 3x3 matrix)
+    Eigen::Matrix3d rotation = transformation.block<3, 3>(0, 0);
+
+    // Convert rotation matrix to Euler angles (ZYX order: yaw, pitch, roll)
+    Eigen::Vector3d euler_angles = rotation.eulerAngles(2, 1, 0) * (180.0 / M_PI); // ZYX order
+    //Eigen::Vector3d euler_angles_deg = euler_angles * (180.0 / M_PI);
+
+    std::cout << "Euler angles (ZYX order):\n";
+    std::cout << "Yaw (Z): " << euler_angles[0] << " deg\n";
+    std::cout << "Pitch (Y): " << euler_angles[1] << " deg\n";
+    std::cout << "Roll (X): " << euler_angles[2] << " deg\n";
+    return euler_angles;
+}
 
 void
 print4x4Matrix (const Eigen::Matrix4d & matrix)
@@ -135,9 +155,14 @@ int main (int argc, char* argv[])
 
   std::vector<double> values(matrix.data(), matrix.data() + matrix.size());
   assert(std::abs(values[0] - 0.923883) < 1e-4 && "values[0] - 0.923883");
-  assert(std::abs(values[12] + 0.4) < 1e-4 && "values[11] + 0.4");
+  assert(std::abs(values[11] + 0.4) < 1e-4 && "values[11] + 0.4");
 
+  Eigen::Vector3d euler_angles = extractEulerAngles(transformation_matrix);  
+  assert(std::abs(euler_angles[0]  - 157.5) < 1e-4 && "euler_angles[0] -  157.5");
+
+  std::cout << "Vector values: [";
   std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
+  std::cout <<"] " <<std::endl;
   pcl::io::savePLYFile("cloud_icp.ply", *cloud_icp);
   return (0);
 }
