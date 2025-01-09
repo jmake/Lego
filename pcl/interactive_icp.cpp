@@ -1,5 +1,10 @@
-#include <iostream>
+#include <cmath>
 #include <string>
+#include <vector>
+#include <cassert>
+#include <iterator>
+#include <iostream>
+
 
 #include <pcl/io/ply_io.h>
 #include <pcl/point_types.h>
@@ -20,7 +25,40 @@ print4x4Matrix (const Eigen::Matrix4d & matrix)
   printf ("    | %6.3f %6.3f %6.3f | \n", matrix (2, 0), matrix (2, 1), matrix (2, 2));
   printf ("Translation vector :\n");
   printf ("t = < %6.3f, %6.3f, %6.3f >\n\n", matrix (0, 3), matrix (1, 3), matrix (2, 3));
+
+  std::vector<double> values(matrix.data(), matrix.data() + matrix.size());
+  std::cout << "Vector values: [";
+  for(int i=0; i < 4; i++)
+  {
+    std::cout << "[ ";
+    for(int j=0; j < 3; j++) std::cout<< values[4*i+j] <<" "; 
+    std::cout << "] \n";
+  }
+  //std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
+  std::cout <<"] " <<std::endl;
 }
+
+PointCloudT::Ptr 
+pcl_transformPointCloud(
+  PointCloudT::Ptr cloud_in, 
+  Eigen::Matrix4d transformation_matrix
+) 
+{
+  double theta = M_PI / 8;  // 22.5 deg
+  transformation_matrix (0, 0) = std::cos (theta);
+  transformation_matrix (0, 1) = -sin (theta);
+  transformation_matrix (1, 0) = sin (theta);
+  transformation_matrix (1, 1) = std::cos (theta);
+  transformation_matrix (2, 3) = 0.4;
+
+  std::cout << "Applying this rigid transformation to: cloud_in -> cloud_icp" << std::endl;
+  print4x4Matrix (transformation_matrix);
+
+  PointCloudT::Ptr cloud_icp (new PointCloudT); 
+  pcl::transformPointCloud (*cloud_in, *cloud_icp, transformation_matrix);
+  return cloud_icp; 
+}
+
 
 
 int main (int argc, char* argv[])
@@ -62,26 +100,9 @@ int main (int argc, char* argv[])
 
   // Defining a rotation matrix and translation vector
   Eigen::Matrix4d transformation_matrix = Eigen::Matrix4d::Identity ();
-
-  // A rotation matrix (see https://en.wikipedia.org/wiki/Rotation_matrix)
-  double theta = M_PI / 8;  // 22.5 deg
-  transformation_matrix (0, 0) = std::cos (theta);
-  transformation_matrix (0, 1) = -sin (theta);
-  transformation_matrix (1, 0) = sin (theta);
-  transformation_matrix (1, 1) = std::cos (theta);
-
-  // A translation on Z axis (0.4 meters)
-  transformation_matrix (2, 3) = 0.4;
-
-  // Display in terminal the transformation matrix
-  std::cout << "Applying this rigid transformation to: cloud_in -> cloud_icp" << std::endl;
-  print4x4Matrix (transformation_matrix);
-
-  // Executing the transformation
-  pcl::transformPointCloud (*cloud_in, *cloud_icp, transformation_matrix);
-  *cloud_tr = *cloud_icp;  // We backup cloud_icp into cloud_tr for later use
+  cloud_icp = pcl_transformPointCloud(cloud_in, transformation_matrix);   
+  *cloud_tr = *cloud_icp;  
   pcl::io::savePLYFile("cloud_tr.ply", *cloud_tr);
-
 
   // The Iterative Closest Point algorithm
   time.tic ();
@@ -105,9 +126,19 @@ int main (int argc, char* argv[])
     PCL_ERROR ("\nICP has not converged.\n");
     return (-1);
   }
+
+  Eigen::Matrix4d matrix = transformation_matrix.transpose();  
+  double determinant = matrix.determinant();
+  std::cout << "Determinant: " << determinant << std::endl;  
+  std::cout << "Matrix:" << std::endl << matrix << std::endl;
+  assert(std::abs(determinant - 1.0) < 1e-4 && "Determinant is not close to 1");
+
+  std::vector<double> values(matrix.data(), matrix.data() + matrix.size());
+  assert(std::abs(values[0] - 0.923883) < 1e-4 && "values[0] - 0.923883");
+  assert(std::abs(values[11] + 0.4) < 1e-4 && "values[11] + 0.4");
+
+  std::copy(values.begin(), values.end(), std::ostream_iterator<double>(std::cout, " "));
   pcl::io::savePLYFile("cloud_icp.ply", *cloud_icp);
-
-
   return (0);
 }
 
