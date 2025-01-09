@@ -8,9 +8,8 @@ include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
-add_executable (interactive_icp interactive_icp.cpp)
-target_link_libraries (interactive_icp ${PCL_LIBRARIES})
-
+add_executable (test_a test_a.cpp)
+target_link_libraries (test_a ${PCL_LIBRARIES})
 
 ## apt-get install -y cmake cmake-curses-gui build-essential
 ## apt-get install -y libpcl-dev
