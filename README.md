@@ -23,4 +23,8 @@
 
 # [mona-lisa-31213](https://www.bricklink.com/v3/studio/design.page?idModel=642660)
 
-![image](https://github.com/user-attachments/assets/8784d3cb-b9ff-4958-8221-1a1b0b5b34b5)
+
+
+![mona-lisa-31213](https://github.com/user-attachments/assets/ae380946-5d82-4d2f-be16-3c6df1131367)
+
+
