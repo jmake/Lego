@@ -1,8 +1,3 @@
-<video controls="" width="800" height="500" muted="" loop="" autoplay="">
-<source src="https://github.com/jmake/Lego/blob/main/Models/42165/0000-12500.mp4" type="video/mp4">
-</video>
-
-
 ## [babylonjs](https://sandbox.babylonjs.com/)
 
 
@@ -36,5 +31,11 @@
 
 ![image](https://github.com/user-attachments/assets/d9749174-cdf2-4269-b48f-82972aec2373)
 
+
+## See: 
+https://raw.githack.com/
+https://livepush.io/mp4-player/
+
+https://raw.githack.com/jmake/Lego/main/Models/42165/0000-12500.mp4
 
 
