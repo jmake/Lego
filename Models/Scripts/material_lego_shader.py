@@ -197,15 +197,17 @@ def setup_base_color_with_rgb_node_for_materials(objects):
         if not mix_shader:
             mix_shader = nodes.new(type='ShaderNodeMixShader')
             mix_shader.location = (0, 200)
+            mix_shader.inputs["Fac"].default_value = 0.75 
 
-        lego_shader = next((n for n in nodes if n.name == "LEGO Shader"), None)
+        shader_name = "LegoShader"
+        lego_shader = next((n for n in nodes if n.name == shader_name), None)
         if not lego_shader:
             lego_shader = nodes.new(type='ShaderNodeGroup')
-            lego_shader.node_tree = bpy.data.node_groups["LEGO Shader"]
+            lego_shader.node_tree = bpy.data.node_groups[shader_name]
             lego_shader.location = (-200, 0)
 
             lego_shader.inputs['Damage'].default_value = 1.0
-            lego_shader.inputs['Use Random'].default_value = 0.0
+            lego_shader.inputs['Random'].default_value = 0.0
             lego_shader.inputs['Translucent'].default_value = 0.0
 
 
